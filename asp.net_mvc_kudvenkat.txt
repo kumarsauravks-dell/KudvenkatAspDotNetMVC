@@ -1,0 +1,36 @@
+======= Asp.Net MVC (Kudvenkat) =======
+#Ref videos - 1,2,3,4
+- Check the version of mvc
+	- Create a controller -> modify the index fuvtion to return a string ->
+	- return typeof(Controller).Assembly.GetName().Version.ToString();
+
+- deploy the application in IIS server 
+	- doubt not work for me
+- difference between asp.net WebForms and MVC Application.
+	- WebForms URLs are mapped to physical files
+		eg : http://localhost/WebFormDemo/Webform1.aspx 
+		     serverName/projectName/physicalFile
+	- MVC URLs are mapped to controller Action Methods
+		eg : http://localhost/MVCDemo/Home/Index
+		     serverName/projectName/Controller/functionName
+
+- How MVC Application identify to load -> http://localhost/MVCDemo/Home/Index when we type http://localhost/MVCDemo only
+	- Global.asax -> Application_Start() -> RouteConfig 
+		-> RegisterRoute -> Default route is defines as Home/Index
+	- id is an optional parameter means we need not compalsury give it. If we define the Index fuction which takes one parameter
+	  then we can use this parameter in our program. If we define two Index fuction with different parameter then also we will see
+	  an error indicating ambiguity.
+	- if we want to retrieve more than one value(like id) , we can use query string as well
+		public string Index(string id)
+        	{
+            		return "id : " + id + " && name : " + Request.QueryString["name"];
+        	}
+	url -> http://localhost:49448/Home/Index/1?name=Kumar
+		public string Index(string id, string name)
+        	{
+            		return "id : " + id + " && name : " + name;
+        	}
+- Function defined in controller are also known as ControllerActionMethods		
+
+#Ref videos - 5
+-  
