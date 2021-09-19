@@ -1,0 +1,17 @@
+Q1. Create a Home controller in MVC application and return a string "Hello I am Index function inside Home Controller!".
+
+Q2. Modify the Index fuction to return 2 parameters id and name.
+
+Q3. Create a view to display list of countries(india,usa,uk,canada) in the form of ul and li using ViewBag.
+
+Q4. Same Program using ViewData.
+
+Q5. Retrieve employee information from hardcoded Employee Details and display it in tablular form.
+
+Q6. Retrieve one record from a database table tblEmployee using entity framework.
+
+Q7. Generate hyperlink of the list employee names. After clicking on a particular employee we are redirected to the Details of that particular Employee.
+
+Q8. Generate hyperlink for department and when we click on a particular department, it should display the list of Employees inside that particular department. 
+
+

@@ -16,7 +16,7 @@
 
 - How MVC Application identify to load -> http://localhost/MVCDemo/Home/Index when we type http://localhost/MVCDemo only
 	- Global.asax -> Application_Start() -> RouteConfig 
-		-> RegisterRoute -> Default route is defines as Home/Index
+		-> RegisterRoute -> Default route is defined as Home/Index
 	- id is an optional parameter means we need not compalsury give it. If we define the Index fuction which takes one parameter
 	  then we can use this parameter in our program. If we define two Index fuction with different parameter then also we will see
 	  an error indicating ambiguity.
@@ -32,5 +32,169 @@
         	}
 - Function defined in controller are also known as ControllerActionMethods		
 
-#Ref videos - 5
--  
+#Ref videos - 5,6
+- View - The purpose of the view is to format the data and present it to the end user.
+- To show the list of countries in the browser, we cant return the list directly instead we have to return a view,
+	The view takes the list format it and display it to the end user.
+- To create a view , inside the function we have to right click -> Add View 
+- Why we are able to return a View when the return type we defined as ActionResult??
+	- because finally the ViewResult is inherited by ActionResult.
+- How to return ListOfCountries to View inside the controller. 
+	public ActionResult Index()
+        {
+            ViewBag.Countries= new List<string>()
+            {
+                "India",
+                "USA",
+                "UK",
+                "Canada"
+            };
+
+            return View();
+        }
+- How to display the ListOfCountries inside a view , which we have recieved from the controller?
+	@{
+    		ViewBag.Title = "List of Countries";
+	}
+
+	<h2>List of Countries</h2>
+	@foreach(string strCountry in ViewBag.Countries)
+	{
+    	<ul>
+         <li>
+            @strCountry
+         </li>
+    	</ul>
+	}
+
+- ViewBag & ViewData are mechanism to pass data from controller to view
+- Use "@" symbol to switch b/n html and c# code.
+- To pass data from controller to view , its a good practice to use strongly typed view models over ViewBag & ViewData.
+	Strongly typed view models provide compile time error checking.
+- Difference b/n ViewData
+	ViwData isa dictionary of object that are stored and retrieved using string as keys.
+	ViewData["YourKey"] = "SomeData";
+	ViewBag.YourProperty = "SomeData";
+- Dynamic feature - Both ViewData & ViewBag does not provide compile time error checking.
+-----------------------------------------------------------------------------
+#Ref Videos - 7
+- How to bind the data of strongly typed model into view
+	- Model Code
+	public class Employee
+    	{
+        	public int Id { get; set; }
+        	public string Name { get; set; }
+        	public string Gender { get; set; }
+        	public string City { get; set; }
+    	}
+	
+	- Controller Code
+	using WebApplication1.Models;
+	namespace WebApplication1.Controllers
+	{
+		public class EmployeeController : Controller
+		{
+			public ActionResult Details()
+			{
+				Employee employee = new Employee()
+				{
+					Id=1,
+					Name="Kumar Saurav",
+					Gender="Male",
+					City="Dhanbad"
+				};
+				return View(employee);
+			}
+		}
+	}
+
+	- View Code
+	@model WebApplication1.Models.Employee
+	<h2>Employee Details</h2>
+	<table>
+    	<tr>
+        	<td><b>Employee Id : </b></td>
+        	<td>@Model.Id</td>
+    	</tr>
+    	<tr>
+        	<td><b>Name : </b></td>
+        	<td>@Model.Name</td>
+    	</tr>
+    	<tr>
+        	<td><b>Gender : </b></td>
+        	<td>@Model.Gender</td>
+    	</tr>
+    	<tr>
+        	<td><b>City : </b></td>
+        	<td>@Model.City</td>
+    	</tr>
+	</table>
+
+- Note : We must have to pass the object reference to the View parameter in controller to avoid null reference exception.
+
+-----------------------------------------------------
+#Ref Videos - 8
+- Steps to retrieve data from a database
+	1. Install entity framework using nuget package manager.
+	2. Add EmployeeContext.cs class file to the Models folder
+		public class EmployeeContext :DbContext
+    	{
+        	public DbSet<Employee> Employees { get; set; }
+    	}
+	3. Add a connection string, to the web.config file , in the root directory
+		<connectionStrings>
+			<add name="EmployeeContext"
+				connectionString="server=.; database=Sample; integrated security=SSPI"
+				providerName="System.Data.SqlClient" />
+		</connectionStrings>
+	4. Map "Employee" model class to the database table, tblEmployee using "Table" attribute.
+		[Table("tblEmployee")]
+	5. Make the required changes to Details() action method in EmployeeController.
+		public ActionResult Details(int id)
+        {
+            EmployeeContext employeeContext = new EmployeeContext();
+            Employee employee = employeeContext.Employees.Single(emp => emp.Id == id);
+            return View(employee);
+        }
+	6. Paste the following code in Application_Sart() function , in Global.asax file.
+		Existing database do not need database initializer so it can be turned off.
+			Database.SetInitializer<WebApplication1.Models.EmployeeContext>(null);
+- We require EmployeeContext class to create a connection to the Sql database.
+	Actually, EmployeeContext class inherits the DbContext class which will do the required operations to establish a connection to database.
+
+
+----------------------------------------------------
+#Ref Video - 9
+- Creating hyperlink using ActionLink
+	- EmployeeController -> Index Method
+		public ActionResult Index()
+			{
+				EmployeeContext employeeContext = new EmployeeContext();
+				List<Employee> employees = employeeContext.Employees.ToList();
+				return View(employees);
+			}
+	- Index View
+		@model IEnumerable<WebApplication1.Models.Employee>
+		@using WebApplication1.Models;
+		<div>
+		<h2>Employee List</h2>
+			<ul>
+				@foreach (Employee employee in @Model)
+				{
+					<li>@Html.ActionLink(employee.Name,"Details", new { id = employee.Id })</li>
+				}        
+			</ul>
+		</div>
+	- Details View 
+		@Html.ActionLink("Back to List","Index")
+
+--------------------------------------------------------
+#Ref Video - 10
+- Working With multiple tables
+	Didn't worked for me.
+
+--------------------------------------------------------
+#Ref Video - 11
+
+
+
